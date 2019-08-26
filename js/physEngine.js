@@ -1,33 +1,35 @@
 
 
-function Point(x,y){
-    this.x=x;
-    this.y=y;
+function Point(x, y, z){
+    this.x = x;
+    this.y = y;
+    this.z = z;
 }
 
 Point.prototype.rotate = function (xc, yc, angle) {
-    var x=this.x; y=this.y;
-    this.x=x*Math.cos(angle*Math.PI/180)-y*Math.sin(angle*Math.PI/180);
-    this.y=x*Math.sin(angle*Math.PI/180)+y*Math.cos(angle*Math.PI/180);
+    var x = this.x; y = this.y;
+    this.x = x*Math.cos(angle*Math.PI/180)-y*Math.sin(angle*Math.PI/180);
+    this.y = x*Math.sin(angle*Math.PI/180)+y*Math.cos(angle*Math.PI/180);
 };
 
 Point.prototype.projection_X = function (xc, yc, angle) {
-    var x=this.x; y=this.y;
-    this.x=x*Math.cos(angle*Math.PI/180)-y*Math.sin(angle*Math.PI/180);
-    this.y=x*Math.sin(angle*Math.PI/180)+y*Math.cos(angle*Math.PI/180);
+    var x = this.x; y = this.y;
+    this.x = x*Math.cos(angle*Math.PI/180)-y*Math.sin(angle*Math.PI/180);
+    this.y = x*Math.sin(angle*Math.PI/180)+y*Math.cos(angle*Math.PI/180);
 };
 
 Point.prototype.projection_Y = function (xc, yc, angle) {
     this.rotate(xc,yc,-angle);
-    var y=this.y;
-    this.y=y*Math.cos(angle*Math.PI/180);
-    this.x=-y*Math.sin(angle*Math.PI/180);
+    var y = this.y;
+    this.y = y*Math.cos(angle*Math.PI/180);
+    this.x = -y*Math.sin(angle*Math.PI/180);
 };
 
 
-function Vector (x, y) {
+function Vector (x, y, z) {
 	this.x = x;
 	this.y = y;
+	this.z = z;
 }
 
 Vector.prototype.length = function () {
@@ -67,7 +69,7 @@ Vector.prototype.minusSelf = function (vector) {
 		console.log("тип должен быть Vector");
 		return;
 	}
-	
+
 	this.x = this.x - vector.x;
 	this.y = this.y - vector.y;
 };
@@ -99,7 +101,7 @@ function Wall (a, b, c) {
 }
 
 Wall.prototype.rotate = function (angle) {
-	
+
 };
 
 /*
@@ -115,12 +117,14 @@ Wall.prototype.rotate = function (angle) {
 */
 
 function Ball (config/*x, y, radius, velocity*/) {
-	this.position = new Vector (config.x, config.y);
+	this.position = new Vector (config.x, config.y, 0);
 	this.invMass = 1 / config.mass;
 	this.elasticity = config.elasticity;
 	//velocityAngle = Math.random() * Math.PI;
-	this.velocity = new Vector (config.velocity * Math.cos(config.velocityAngle), config.velocity * Math.sin(config.velocityAngle));
+	this.velocity = new Vector (config.velocity * Math.cos(config.velocityAngle), config.velocity * Math.sin(config.velocityAngle), 0);
 	this.radius = config.radius;
+
+	// this.acceleration = new Vector(config.acceleration, config.acceleration );
 }
 
 Ball.prototype.move = function (time) {
@@ -133,7 +137,7 @@ Ball.prototype.strikeSolverWall = function (wall) {
     }
 
     // Возможная двойная утечка...
-    var projectionVelocity = new Vector (wall.a, wall.b);
+    var projectionVelocity = new Vector (wall.a, wall.b, 0);
     projectionVelocity.numberMultiplySelf(1 / projectionVelocity.length());
 
     var projectionLength = projectionVelocity.scalarMultiply(this.velocity);
