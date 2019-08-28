@@ -32,6 +32,15 @@ function Vector (x, y, z) {
 	this.z = z;
 }
 
+Vector.prototype.initFromLength = function (length, angleXZ, angleXY) {
+    let cosXZ = Math.cos(angleXZ);
+    this.x = length * cosXZ * Math.cos(angleXY);
+    this.y = length * Math.sin(angleXZ);
+    this.z = length * cosXZ * Math.sin(angleXY);
+
+    return this;
+};
+
 Vector.prototype.length = function () {
     return Math.sqrt(this.x * this.x + this.y * this.y);
 };
@@ -121,13 +130,13 @@ function Ball (config/*x, y, radius, velocity*/) {
 	this.invMass = 1 / config.mass;
 	this.elasticity = config.elasticity;
 	//velocityAngle = Math.random() * Math.PI;
-	this.velocity = new Vector (config.velocity * Math.cos(config.velocityAngle), config.velocity * Math.sin(config.velocityAngle), 0);
+	this.velocity = config.velocity;//new Vector (config.velocity * Math.cos(config.velocityAngle), config.velocity * Math.sin(config.velocityAngle), 0);
 	this.radius = config.radius;
-
-	// this.acceleration = new Vector(config.acceleration, config.acceleration );
+    this.acceleration = config.acceleration;
 }
 
 Ball.prototype.move = function (time) {
+    this.velocity.plusSelf(this.acceleration.numberMultiply(time));
     this.position.plusSelf(this.velocity.numberMultiply(time));
 };
 
